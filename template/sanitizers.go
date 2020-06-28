@@ -334,6 +334,7 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"max":                   sanitizationContextNone,
 	"maxlength":             sanitizationContextNone,
 	"min":                   sanitizationContextNone,
+	"minlength":             sanitizationContextNone,
 	"multiple":              sanitizationContextNone,
 	"muted":                 sanitizationContextNone,
 	"name":                  sanitizationContextIdentifier,
