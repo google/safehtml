@@ -10,7 +10,8 @@ or this [OWASP talk](https://www.youtube.com/watch?v=ccfEu-Jj0as).
 Additional subpackages provide APIs for managing exceptions to the
 safety rules, and a template engine with a syntax and interface that closely
 matches [`html/template`](https://golang.org/pkg/html/template/). You can refer
-to the godoc for each (sub)package for the API documentation and code examples.
+to the [godoc](https://pkg.go.dev/github.com/google/safehtml?tab=doc)
+for each (sub)package for the API documentation and code examples.
 More end-to-end demos are available in `example_test.go`.
 
 This is not an officially supported Google product.
