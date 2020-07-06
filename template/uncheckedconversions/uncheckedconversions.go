@@ -12,7 +12,7 @@
 package uncheckedconversions
 
 import (
-	"github.com/google/safehtml/template/raw"
+	"github.com/google/safehtml/internal/template/raw"
 	"github.com/google/safehtml/template"
 )
 

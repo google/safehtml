@@ -22,7 +22,7 @@
 package uncheckedconversions
 
 import (
-	"github.com/google/safehtml/raw"
+	"github.com/google/safehtml/internal/raw"
 	"github.com/google/safehtml"
 )
 

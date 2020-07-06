@@ -10,8 +10,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/google/safehtml/internal/safehtmlutil"
 	"github.com/google/safehtml"
-	"github.com/google/safehtml/safehtmlutil"
 )
 
 // urlPrefixValidators maps URL and TrustedResourceURL sanitization contexts to functions return an error

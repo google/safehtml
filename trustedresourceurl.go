@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"flag"
-	"github.com/google/safehtml/safehtmlutil"
+	"github.com/google/safehtml/internal/safehtmlutil"
 )
 
 // A TrustedResourceURL is an immutable string-like type referencing the

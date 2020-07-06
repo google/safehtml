@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"text/template"
 
+	"github.com/google/safehtml/internal/safehtmlutil"
 	"github.com/google/safehtml"
-	"github.com/google/safehtml/safehtmlutil"
 )
 
 // sanitizationContext determines what type of sanitization to perform

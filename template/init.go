@@ -7,7 +7,7 @@
 package template
 
 import (
-	"github.com/google/safehtml/template/raw"
+	"github.com/google/safehtml/internal/template/raw"
 )
 
 // The following functions are used by package uncheckedconversions

@@ -71,7 +71,7 @@ func TestValidateTrustedResourceURLPrefix(t *testing.T) {
 		valid bool
 	}{
 		// Basic test cases for clearly safe and unsafe prefixes. Comprehensive test cases can
-		// be found in TestIsSafeTrustedResourceURLPrefix in package safehtml/safehtmlutil.
+		// be found in TestIsSafeTrustedResourceURLPrefix in package safehtml/internal/safehtmlutil.
 		{`https://www.foo.com/`, true},
 		{`javascript:alert`, false},
 		// Leading and trailing newlines.

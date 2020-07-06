@@ -138,7 +138,7 @@ func TestTrustedResourceURLFormat(t *testing.T) {
 			``,
 		},
 		// Basic test cases for format string validation. Comprehensive test cases can
-		// be found in TestIsSafeTrustedResourceURLPrefix in package safehtml/safehtmlutil.
+		// be found in TestIsSafeTrustedResourceURLPrefix in package safehtml/internal/safehtmlutil.
 		{
 			"path ambiguity",
 			`/%{path}/`,
