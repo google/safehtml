@@ -188,6 +188,9 @@ var elementSpecificAttrValSanitizationContext = map[string]map[string]sanitizati
 	"datetime": {
 		"time": sanitizationContextNone,
 	},
+	"download": {
+		"a": sanitizationContextNone,
+	},
 	"formaction": {
 		"button": sanitizationContextURL,
 		"input":  sanitizationContextURL,
