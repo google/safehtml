@@ -236,9 +236,6 @@ var elementSpecificAttrValSanitizationContext = map[string]map[string]sanitizati
 		"input":    sanitizationContextNone,
 		"textarea": sanitizationContextNone,
 	},
-	"select": {
-		"content": sanitizationContextNone,
-	},
 	"src": {
 		"audio":  sanitizationContextTrustedResourceURLOrURL,
 		"img":    sanitizationContextTrustedResourceURLOrURL,
@@ -390,7 +387,6 @@ var elementContentSanitizationContext = map[string]sanitizationContext{
 	"code":       sanitizationContextHTML,
 	"colgroup":   sanitizationContextHTML,
 	"command":    sanitizationContextHTML,
-	"content":    sanitizationContextHTML,
 	"data":       sanitizationContextHTML,
 	"datalist":   sanitizationContextHTML,
 	"dd":         sanitizationContextHTML,
