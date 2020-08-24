@@ -283,6 +283,7 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"aria-multiline":        sanitizationContextNone,
 	"aria-multiselectable":  sanitizationContextNone,
 	"aria-orientation":      sanitizationContextNone,
+	"aria-owns":             sanitizationContextIdentifier,
 	"aria-posinset":         sanitizationContextNone,
 	"aria-pressed":          sanitizationContextNone,
 	"aria-readonly":         sanitizationContextNone,
