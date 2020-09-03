@@ -384,6 +384,7 @@ var elementContentSanitizationContext = map[string]sanitizationContext{
 	"button":     sanitizationContextHTML,
 	"canvas":     sanitizationContextHTML,
 	"caption":    sanitizationContextHTML,
+	"center":     sanitizationContextHTML,
 	"cite":       sanitizationContextHTML,
 	"code":       sanitizationContextHTML,
 	"colgroup":   sanitizationContextHTML,
