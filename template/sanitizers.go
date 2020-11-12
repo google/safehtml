@@ -188,6 +188,9 @@ var elementSpecificAttrValSanitizationContext = map[string]map[string]sanitizati
 	"datetime": {
 		"time": sanitizationContextNone,
 	},
+	"defer": {
+		"script": sanitizationContextNone,
+	},
 	"download": {
 		"a": sanitizationContextNone,
 	},
