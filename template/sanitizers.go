@@ -426,6 +426,7 @@ var elementContentSanitizationContext = map[string]sanitizationContext{
 	"kbd":        sanitizationContextHTML,
 	"label":      sanitizationContextHTML,
 	"legend":     sanitizationContextHTML,
+	"lh":         sanitizationContextHTML,
 	"li":         sanitizationContextHTML,
 	"main":       sanitizationContextHTML,
 	"map":        sanitizationContextHTML,
