@@ -487,7 +487,6 @@ var allowedVoidElements = map[string]bool{
 	"hr":     true,
 	"img":    true,
 	"input":  true,
-	"keygen": true,
 	"link":   true,
 	"param":  true,
 	"source": true,
