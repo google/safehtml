@@ -33,6 +33,11 @@ func TestTrustedResourceURLWithParams(t *testing.T) {
 		},
 		{
 			TrustedResourceURLFromConstant(`https://example.com/`),
+			map[string]string{`b`: `1`, `a`: `2`, `c`: `3`},
+			`https://example.com/?a=2&b=1&c=3`,
+		},
+		{
+			TrustedResourceURLFromConstant(`https://example.com/`),
 			map[string]string{`a`: `&`},
 			`https://example.com/?a=%26`,
 		},

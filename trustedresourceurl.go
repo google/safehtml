@@ -9,6 +9,7 @@ package safehtml
 import (
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 
 	"flag"
@@ -49,7 +50,8 @@ type TrustedResourceURL struct {
 // TrustedResourceURLWithParams constructs a new TrustedResourceURL with the
 // given key-value pairs added as query parameters.
 //
-// Map entries with empty keys or values are ignored.
+// Map entries with empty keys or values are ignored. The order of appended
+// keys is guaranteed to be stable but may differ from the order in input.
 func TrustedResourceURLWithParams(t TrustedResourceURL, params map[string]string) TrustedResourceURL {
 	url := t.str
 	var fragment string
@@ -72,12 +74,17 @@ func TrustedResourceURLWithParams(t TrustedResourceURL, params map[string]string
 			sep = "&"
 		}
 	}
+	stringParams := make([]string, 0, len(params))
 	for k, v := range params {
 		if k == "" || v == "" {
 			continue
 		}
-		url += sep + safehtmlutil.QueryEscapeURL(k) + "=" + safehtmlutil.QueryEscapeURL(v)
-		sep = "&"
+		stringParam := safehtmlutil.QueryEscapeURL(k) + "=" + safehtmlutil.QueryEscapeURL(v)
+		stringParams = append(stringParams, stringParam)
+	}
+	if len(stringParams) > 0 {
+		sort.Strings(stringParams)
+		url += sep + strings.Join(stringParams, "&")
 	}
 	return TrustedResourceURL{url + fragment}
 }
