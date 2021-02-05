@@ -261,6 +261,7 @@ var elementSpecificAttrValSanitizationContext = map[string]map[string]sanitizati
 		"link":    sanitizationContextNone,
 		"ol":      sanitizationContextNone,
 		"script":  sanitizationContextNone,
+		"source":  sanitizationContextNone,
 	},
 }
 
