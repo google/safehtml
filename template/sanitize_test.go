@@ -165,7 +165,7 @@ func TestNilEmptySliceData(t *testing.T) {
 		in   interface{}
 		want string
 	}{
-		{"nil", nil, testNilEmptySliceDataNilWant},
+		{"nil", nil, `<b>&lt;nil&gt;</b>`},
 		{"zero-length slice", []string{}, "<b>[]</b>"},
 		{"slice containing nil", []interface{}{nil}, "<b>[&lt;nil&gt;]</b>"},
 	} {
