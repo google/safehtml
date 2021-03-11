@@ -206,9 +206,6 @@ var elementSpecificAttrValSanitizationContext = map[string]map[string]sanitizati
 		"a":    sanitizationContextTrustedResourceURLOrURL,
 		"area": sanitizationContextTrustedResourceURLOrURL,
 	},
-	"icon": {
-		"menuitem": sanitizationContextURL,
-	},
 	"loading": {
 		"iframe": sanitizationContextLoadingEnum,
 		"img":    sanitizationContextLoadingEnum,
@@ -433,7 +430,6 @@ var elementContentSanitizationContext = map[string]sanitizationContext{
 	"map":        sanitizationContextHTML,
 	"mark":       sanitizationContextHTML,
 	"menu":       sanitizationContextHTML,
-	"menuitem":   sanitizationContextHTML,
 	"meter":      sanitizationContextHTML,
 	"nav":        sanitizationContextHTML,
 	"noscript":   sanitizationContextHTML,
