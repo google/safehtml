@@ -352,6 +352,7 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"shape":                 sanitizationContextNone,
 	"size":                  sanitizationContextNone,
 	"sizes":                 sanitizationContextNone,
+	"slot":                  sanitizationContextNone,
 	"span":                  sanitizationContextNone,
 	"spellcheck":            sanitizationContextNone,
 	"src":                   sanitizationContextTrustedResourceURL,
