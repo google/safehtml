@@ -167,32 +167,8 @@ var elementSpecificAttrValSanitizationContext = map[string]map[string]sanitizati
 	"action": {
 		"form": sanitizationContextURL,
 	},
-	"autoplay": {
-		"video": sanitizationContextNone,
-	},
-	"cellpadding": {
-		"table": sanitizationContextNone,
-	},
-	"cellspacing": {
-		"table": sanitizationContextNone,
-	},
-	"cite": {
-		"blockquote": sanitizationContextURL,
-		"del":        sanitizationContextURL,
-		"ins":        sanitizationContextURL,
-		"q":          sanitizationContextURL,
-	},
-	"controls": {
-		"video": sanitizationContextNone,
-	},
-	"datetime": {
-		"time": sanitizationContextNone,
-	},
 	"defer": {
 		"script": sanitizationContextNone,
-	},
-	"download": {
-		"a": sanitizationContextNone,
 	},
 	"formaction": {
 		"button": sanitizationContextURL,
@@ -206,31 +182,11 @@ var elementSpecificAttrValSanitizationContext = map[string]map[string]sanitizati
 		"a":    sanitizationContextTrustedResourceURLOrURL,
 		"area": sanitizationContextTrustedResourceURLOrURL,
 	},
-	"loading": {
-		"iframe": sanitizationContextLoadingEnum,
-		"img":    sanitizationContextLoadingEnum,
-	},
-	"media": {
-		"link":   sanitizationContextNone,
-		"source": sanitizationContextNone,
-		"style":  sanitizationContextNone,
-	},
 	"method": {
 		"form": sanitizationContextNone,
 	},
-	"nonce": {
-		"link":   sanitizationContextNone,
-		"script": sanitizationContextNone,
-		"style":  sanitizationContextNone,
-	},
-	"open": {
-		"details": sanitizationContextNone,
-	},
 	"pattern": {
 		"input": sanitizationContextNone,
-	},
-	"poster": {
-		"video": sanitizationContextURL,
 	},
 	"readonly": {
 		"input":    sanitizationContextNone,
@@ -245,20 +201,6 @@ var elementSpecificAttrValSanitizationContext = map[string]map[string]sanitizati
 	},
 	"srcdoc": {
 		"iframe": sanitizationContextHTMLValOnly,
-	},
-	"srcset": {
-		"img":    sanitizationContextURLSet,
-		"source": sanitizationContextURLSet,
-	},
-	"type": {
-		"button":  sanitizationContextNone,
-		"command": sanitizationContextNone,
-		"input":   sanitizationContextNone,
-		"li":      sanitizationContextNone,
-		"link":    sanitizationContextNone,
-		"ol":      sanitizationContextNone,
-		"script":  sanitizationContextNone,
-		"source":  sanitizationContextNone,
 	},
 }
 
@@ -304,16 +246,23 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"autocomplete":          sanitizationContextNone,
 	"autocorrect":           sanitizationContextNone,
 	"autofocus":             sanitizationContextNone,
+	"autoplay":              sanitizationContextNone,
 	"bgcolor":               sanitizationContextNone,
 	"border":                sanitizationContextNone,
+	"cellpadding":           sanitizationContextNone,
+	"cellspacing":           sanitizationContextNone,
 	"checked":               sanitizationContextNone,
+	"cite":                  sanitizationContextURL,
 	"class":                 sanitizationContextNone,
 	"color":                 sanitizationContextNone,
 	"cols":                  sanitizationContextNone,
 	"colspan":               sanitizationContextNone,
 	"contenteditable":       sanitizationContextNone,
+	"controls":              sanitizationContextNone,
+	"datetime":              sanitizationContextNone,
 	"dir":                   sanitizationContextDirEnum,
 	"disabled":              sanitizationContextNone,
+	"download":              sanitizationContextNone,
 	"draggable":             sanitizationContextNone,
 	"enctype":               sanitizationContextNone,
 	"face":                  sanitizationContextNone,
@@ -334,15 +283,20 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"label":                 sanitizationContextNone,
 	"lang":                  sanitizationContextNone,
 	"list":                  sanitizationContextIdentifier,
+	"loading":               sanitizationContextLoadingEnum,
 	"loop":                  sanitizationContextNone,
 	"max":                   sanitizationContextNone,
 	"maxlength":             sanitizationContextNone,
+	"media":                 sanitizationContextNone,
 	"min":                   sanitizationContextNone,
 	"minlength":             sanitizationContextNone,
 	"multiple":              sanitizationContextNone,
 	"muted":                 sanitizationContextNone,
 	"name":                  sanitizationContextIdentifier,
+	"nonce":                 sanitizationContextNone,
+	"open":                  sanitizationContextNone,
 	"placeholder":           sanitizationContextNone,
+	"poster":                sanitizationContextURL,
 	"preload":               sanitizationContextNone,
 	"rel":                   sanitizationContextNone,
 	"required":              sanitizationContextNone,
@@ -358,6 +312,7 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"span":                  sanitizationContextNone,
 	"spellcheck":            sanitizationContextNone,
 	"src":                   sanitizationContextTrustedResourceURL,
+	"srcset":                sanitizationContextURLSet,
 	"start":                 sanitizationContextNone,
 	"step":                  sanitizationContextNone,
 	"style":                 sanitizationContextStyle,
@@ -366,6 +321,7 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"target":                sanitizationContextTargetEnum,
 	"title":                 sanitizationContextNone,
 	"translate":             sanitizationContextNone,
+	"type":                  sanitizationContextNone,
 	"valign":                sanitizationContextNone,
 	"value":                 sanitizationContextNone,
 	"width":                 sanitizationContextNone,
