@@ -6,15 +6,19 @@ package template
 
 import (
 	"bytes"
+	"embed"
 	"fmt"
 	"io"
-	"io/ioutil"
+	"io/fs"
+	"os"
+	"path"
 	"path/filepath"
 	"sync"
 	"text/template"
 	"text/template/parse"
 
 	"log"
+
 	"github.com/google/safehtml"
 	"github.com/google/safehtml/uncheckedconversions"
 )
@@ -465,7 +469,7 @@ func stringConstantsToStrings(strs []stringConstant) []string {
 // an attacker, filenames must be untyped string constants, which are always under
 // programmer control.
 func ParseFiles(filenames ...stringConstant) (*Template, error) {
-	return parseFiles(nil, stringConstantsToStrings(filenames)...)
+	return parseFiles(nil, readFileOS, stringConstantsToStrings(filenames)...)
 }
 
 // ParseFilesFromTrustedSources creates a new Template and parses the template definitions from
@@ -482,7 +486,7 @@ func ParseFiles(filenames ...stringConstant) (*Template, error) {
 // an attacker, filenames must be trusted sources, which are always under programmer
 // or application control.
 func ParseFilesFromTrustedSources(filenames ...TrustedSource) (*Template, error) {
-	return parseFiles(nil, trustedSourcesToStrings(filenames)...)
+	return parseFiles(nil, readFileOS, trustedSourcesToStrings(filenames)...)
 }
 
 // ParseFiles parses the named files and associates the resulting templates with
@@ -498,7 +502,7 @@ func ParseFilesFromTrustedSources(filenames ...TrustedSource) (*Template, error)
 // an attacker, filenames must be untyped string constants, which are always under
 // programmer control.
 func (t *Template) ParseFiles(filenames ...stringConstant) (*Template, error) {
-	return parseFiles(t, stringConstantsToStrings(filenames)...)
+	return parseFiles(t, readFileOS, stringConstantsToStrings(filenames)...)
 }
 
 // ParseFilesFromTrustedSources parses the named files and associates the resulting templates with
@@ -514,12 +518,12 @@ func (t *Template) ParseFiles(filenames ...stringConstant) (*Template, error) {
 // an attacker, filenames must be trusted sources, which are always under programmer
 // or application control.
 func (t *Template) ParseFilesFromTrustedSources(filenames ...TrustedSource) (*Template, error) {
-	return parseFiles(t, trustedSourcesToStrings(filenames)...)
+	return parseFiles(t, readFileOS, trustedSourcesToStrings(filenames)...)
 }
 
 // parseFiles is the helper for the method and function. If the argument
 // template is nil, it is created from the first file.
-func parseFiles(t *Template, filenames ...string) (*Template, error) {
+func parseFiles(t *Template, readFile func(string) (string, []byte, error), filenames ...string) (*Template, error) {
 	if err := t.checkCanParse(); err != nil {
 		return nil, err
 	}
@@ -529,12 +533,11 @@ func parseFiles(t *Template, filenames ...string) (*Template, error) {
 		return nil, fmt.Errorf("html/template: no files named in call to ParseFiles")
 	}
 	for _, filename := range filenames {
-		b, err := ioutil.ReadFile(filename)
+		name, b, err := readFile(filename)
 		if err != nil {
 			return nil, err
 		}
 		s := stringConstant(b)
-		name := filepath.Base(filename)
 		// First template becomes return value if not already defined,
 		// and we use that one for subsequent New calls to associate
 		// all the templates together. Also, if this file has the same name
@@ -632,7 +635,67 @@ func parseGlob(t *Template, pattern string) (*Template, error) {
 	if len(filenames) == 0 {
 		return nil, fmt.Errorf("html/template: pattern matches no files: %#q", pattern)
 	}
-	return parseFiles(t, filenames...)
+	return parseFiles(t, readFileOS, filenames...)
+}
+
+// ParseEmbedFS is like ParseFiles or ParseGlob but reads from the file system fsys
+// instead of the host operating system's file system.
+// It accepts a list of glob patterns.
+// (Note that most file names serve as glob patterns matching only themselves.)
+//
+// To guarantee that fsys, and thus the template bodies, is never controlled by
+// an attacker, it must be an embed.FS, which is always under programmer
+// control.
+func ParseEmbedFS(fsys embed.FS, patterns ...string) (*Template, error) {
+	return parseFS(nil, fsys, patterns)
+
+}
+
+// ParseEmbedFS is like ParseFiles or ParseGlob but reads from the file system fsys
+// instead of the host operating system's file system.
+// It accepts a list of glob patterns.
+// (Note that most file names serve as glob patterns matching only themselves.)
+//
+// To guarantee that fsys, and thus the template bodies, is never controlled by
+// an attacker, it must be an embed.FS, which is always under programmer
+// control.
+func (t *Template) ParseEmbedFS(fsys embed.FS, patterns ...string) (*Template, error) {
+	return parseFS(t, fsys, patterns)
+}
+
+// Copied from
+// https://go.googlesource.com/go/+/refs/tags/go1.17.1/src/text/template/helper.go.
+func parseFS(t *Template, fsys fs.FS, patterns []string) (*Template, error) {
+	var filenames []string
+	for _, pattern := range patterns {
+		list, err := fs.Glob(fsys, pattern)
+		if err != nil {
+			return nil, err
+		}
+		if len(list) == 0 {
+			return nil, fmt.Errorf("template: pattern matches no files: %#q", pattern)
+		}
+		filenames = append(filenames, list...)
+	}
+	return parseFiles(t, readFileFS(fsys), filenames...)
+}
+
+// Copied from
+// https://go.googlesource.com/go/+/refs/tags/go1.17.1/src/text/template/helper.go.
+func readFileOS(file string) (name string, b []byte, err error) {
+	name = filepath.Base(file)
+	b, err = os.ReadFile(file)
+	return
+}
+
+// Copied from
+// https://go.googlesource.com/go/+/refs/tags/go1.17.1/src/text/template/helper.go.
+func readFileFS(fsys fs.FS) func(string) (string, []byte, error) {
+	return func(file string) (name string, b []byte, err error) {
+		name = path.Base(file)
+		b, err = fs.ReadFile(fsys, file)
+		return
+	}
 }
 
 // IsTrue reports whether the value is 'true', in the sense of not the zero of its type,

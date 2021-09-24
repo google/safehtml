@@ -6,6 +6,7 @@ package template
 
 import (
 	"bytes"
+	"embed"
 	"io"
 	"io/ioutil"
 	"log"
@@ -172,6 +173,17 @@ func TestParseGlob(t *testing.T) {
 	parsedTmpl := Must(tmpl.ParseGlob(stringConstant(filepath.Join(dir, "T*.tmpl"))))
 	if parsedTmpl != tmpl {
 		t.Errorf("expected ParseGlob to update template")
+	}
+}
+
+//go:embed testdata
+var testFS embed.FS
+
+func TestParseEmbedFS(t *testing.T) {
+	tmpl := New("root")
+	parsedTmpl := Must(tmpl.ParseEmbedFS(testFS, "testdata/glob_*.tmpl"))
+	if parsedTmpl != tmpl {
+		t.Errorf("expected ParseEmbedFS to update template")
 	}
 }
 
