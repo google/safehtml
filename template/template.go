@@ -465,7 +465,7 @@ func stringConstantsToStrings(strs []stringConstant) []string {
 // an attacker, filenames must be untyped string constants, which are always under
 // programmer control.
 func ParseFiles(filenames ...stringConstant) (*Template, error) {
-	return parseFiles(nil, stringConstantsToStrings(filenames)...)
+	return parseFiles(nil, readFileOS, stringConstantsToStrings(filenames)...)
 }
 
 // ParseFilesFromTrustedSources creates a new Template and parses the template definitions from
@@ -482,7 +482,7 @@ func ParseFiles(filenames ...stringConstant) (*Template, error) {
 // an attacker, filenames must be trusted sources, which are always under programmer
 // or application control.
 func ParseFilesFromTrustedSources(filenames ...TrustedSource) (*Template, error) {
-	return parseFiles(nil, trustedSourcesToStrings(filenames)...)
+	return parseFiles(nil, readFileOS, trustedSourcesToStrings(filenames)...)
 }
 
 // ParseFiles parses the named files and associates the resulting templates with
@@ -498,7 +498,7 @@ func ParseFilesFromTrustedSources(filenames ...TrustedSource) (*Template, error)
 // an attacker, filenames must be untyped string constants, which are always under
 // programmer control.
 func (t *Template) ParseFiles(filenames ...stringConstant) (*Template, error) {
-	return parseFiles(t, stringConstantsToStrings(filenames)...)
+	return parseFiles(t, readFileOS, stringConstantsToStrings(filenames)...)
 }
 
 // ParseFilesFromTrustedSources parses the named files and associates the resulting templates with
@@ -514,12 +514,13 @@ func (t *Template) ParseFiles(filenames ...stringConstant) (*Template, error) {
 // an attacker, filenames must be trusted sources, which are always under programmer
 // or application control.
 func (t *Template) ParseFilesFromTrustedSources(filenames ...TrustedSource) (*Template, error) {
-	return parseFiles(t, trustedSourcesToStrings(filenames)...)
+	return parseFiles(t, readFileOS, trustedSourcesToStrings(filenames)...)
 }
 
 // parseFiles is the helper for the method and function. If the argument
 // template is nil, it is created from the first file.
-func parseFiles(t *Template, filenames ...string) (*Template, error) {
+// readFile takes a filename and returns the file's basename and contents.
+func parseFiles(t *Template, readFile func(string) (string, []byte, error), filenames ...string) (*Template, error) {
 	if err := t.checkCanParse(); err != nil {
 		return nil, err
 	}
@@ -529,12 +530,11 @@ func parseFiles(t *Template, filenames ...string) (*Template, error) {
 		return nil, fmt.Errorf("html/template: no files named in call to ParseFiles")
 	}
 	for _, filename := range filenames {
-		b, err := ioutil.ReadFile(filename)
+		name, b, err := readFile(filename)
 		if err != nil {
 			return nil, err
 		}
 		s := stringConstant(b)
-		name := filepath.Base(filename)
 		// First template becomes return value if not already defined,
 		// and we use that one for subsequent New calls to associate
 		// all the templates together. Also, if this file has the same name
@@ -556,6 +556,14 @@ func parseFiles(t *Template, filenames ...string) (*Template, error) {
 		}
 	}
 	return t, nil
+}
+
+// Copied with minor changes from
+// https://go.googlesource.com/go/+/refs/tags/go1.17.1/src/text/template/helper.go.
+func readFileOS(file string) (string, []byte, error) {
+	name := filepath.Base(file)
+	b, err := ioutil.ReadFile(file)
+	return name, b, err
 }
 
 // ParseGlob creates a new Template and parses the template definitions from the
@@ -632,7 +640,7 @@ func parseGlob(t *Template, pattern string) (*Template, error) {
 	if len(filenames) == 0 {
 		return nil, fmt.Errorf("html/template: pattern matches no files: %#q", pattern)
 	}
-	return parseFiles(t, filenames...)
+	return parseFiles(t, readFileOS, filenames...)
 }
 
 // IsTrue reports whether the value is 'true', in the sense of not the zero of its type,
