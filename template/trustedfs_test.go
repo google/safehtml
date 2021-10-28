@@ -21,6 +21,19 @@ func TestParseFS(t *testing.T) {
 	tmpl := New("root")
 	parsedTmpl := Must(tmpl.ParseFS(TrustedFSFromEmbed(testFS), "testdata/glob_*.tmpl"))
 	if parsedTmpl != tmpl {
-		t.Errorf("expected ParseEmbedFS to update template")
+		t.Errorf("expected ParseFS to update template")
+	}
+}
+
+func TestSub(t *testing.T) {
+	tfs := TrustedFSFromEmbed(testFS)
+	sub, err := tfs.Sub(TrustedSourceFromConstant("testdata"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	tmpl := New("t1")
+	parsedTmpl := Must(tmpl.ParseFS(sub, "dir1/parsefiles_t1.tmpl"))
+	if parsedTmpl != tmpl {
+		t.Errorf("expected ParseFS to update template")
 	}
 }
