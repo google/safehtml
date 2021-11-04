@@ -215,6 +215,7 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"aria-busy":             sanitizationContextNone,
 	"aria-checked":          sanitizationContextNone,
 	"aria-controls":         sanitizationContextIdentifier,
+	"aria-current":          sanitizationContextNone,
 	"aria-disabled":         sanitizationContextNone,
 	"aria-dropeffect":       sanitizationContextNone,
 	"aria-expanded":         sanitizationContextNone,
