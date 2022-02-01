@@ -28,7 +28,7 @@ import (
 // that text should have been interpolated with appropriate escaping,
 // sanitization and/or validation into the right location in the script, such
 // that it is highly constrained in its effect (for example, it had to match a
-// set of whitelisted words).
+// set of allowed words).
 //
 // In order to ensure that an attacker cannot influence the Script
 // value, a Script can only be instantiated from compile-time

@@ -1281,7 +1281,7 @@ func TestExecuteErrors(t *testing.T) {
 		},
 		// When we have a conditional element or attribute name suffix, the
 		// sanitizer only sees the name prefix when performing template sanitization.
-		// The prefix is very unlikely to be a whitelisted element or attribute name
+		// The prefix is very unlikely to be an allowed element or attribute name
 		// on its own, and will therefore be rejected.
 		{
 			desc: `conditional element name suffix`,
@@ -1294,7 +1294,7 @@ func TestExecuteErrors(t *testing.T) {
 			want: `actions must not occur in the "d" attribute value context of a "area" element`,
 		},
 		{
-			desc: `if = non-whitelisted element, else = HTML, safehtml/template conditonal branch error`,
+			desc: `if = disallowed element, else = HTML, safehtml/template conditonal branch error`,
 			tmpl: `{{if 0}}<object>{{end}}{{ "hello" }}`,
 			want: `conditional branch with element "object" results in sanitization error: ` +
 				`actions must not occur in the element content context of a "object" element`,
@@ -1322,7 +1322,7 @@ func TestExecuteErrors(t *testing.T) {
 			want: `branches end in different contexts`,
 		},
 		{
-			desc: `range = non-whitelisted element, else = HTML, safehtml/template conditonal branch error`,
+			desc: `range = disallowed element, else = HTML, safehtml/template conditonal branch error`,
 			tmpl: `{{range .}}<object>{{end}}{{ "hello" }}`,
 			data: []string{"foo", "bar"},
 			want: `conditional branch with element "object" results in sanitization error: ` +
@@ -1341,7 +1341,7 @@ func TestExecuteErrors(t *testing.T) {
 			want: `branches end in different contexts`,
 		},
 		{
-			desc: `with = non-whitelisted element, else = HTML, safehtml/template conditonal branch error`,
+			desc: `with = disallowed element, else = HTML, safehtml/template conditonal branch error`,
 			tmpl: `{{with 0}}<object>{{end}}{{ "hello" }}`,
 			want: `conditional branch with element "object" results in sanitization error: ` +
 				`actions must not occur in the element content context of a "object" element`,
@@ -1364,7 +1364,7 @@ func TestExecuteErrors(t *testing.T) {
 			want: `branches end in different contexts`,
 		},
 		{
-			desc: `if = non-whitelisted attribute, else = no sanitization, safehtml/template conditonal branch error`,
+			desc: `if = disallowed attribute, else = no sanitization, safehtml/template conditonal branch error`,
 			tmpl: `<p {{if 0}}customattr{{else}}class{{end}}="{{ "hello" }}">`,
 			want: `conditional branch with {element="p", attribute="customattr"} results in sanitization error: ` +
 				`actions must not occur in the "customattr" attribute value context of a "p" element`,
@@ -1398,7 +1398,7 @@ func TestExecuteErrors(t *testing.T) {
 				`{element="a", attribute="target"} has sanitization context "TargetEnum"`,
 		},
 		{
-			desc: `range = non-whitelisted attribute, else = no sanitization, safehtml/template conditonal branch error`,
+			desc: `range = disallowed attribute, else = no sanitization, safehtml/template conditonal branch error`,
 			tmpl: `<p {{range .}}customattr{{else}}class{{end}}="{{ "hello" }}">`,
 			data: []string{"foo", "bar"},
 			want: `conditional branch with {element="p", attribute="customattr"} results in sanitization error: ` +
@@ -1413,7 +1413,7 @@ func TestExecuteErrors(t *testing.T) {
 				`{element="a", attribute="id"} has sanitization context "Identifier"`,
 		},
 		{
-			desc: `with = non-whitelisted attribute, else = no sanitization, safehtml/template conditonal branch error`,
+			desc: `with = disallowed attribute, else = no sanitization, safehtml/template conditonal branch error`,
 			tmpl: `<p {{with 0}}customattr{{else}}class{{end}}="{{ "hello" }}">`,
 			want: `conditional branch with {element="p", attribute="customattr"} results in sanitization error: ` +
 				`actions must not occur in the "customattr" attribute value context of a "p" element`,
@@ -1438,32 +1438,32 @@ func TestExecuteErrors(t *testing.T) {
 				`{element="a", attribute="id"} has sanitization context "Identifier"`,
 		},
 		{
-			desc: `non-whitelisted attributes disallowed`,
+			desc: `disallowed attributes disallowed`,
 			tmpl: `<option customattr="{{ . }}">`,
 			want: `actions must not occur in the "customattr" attribute value context of a "option" element`,
 		},
 		{
-			desc: `non-whitelisted element name disallowed 1`,
+			desc: `disallowed element name disallowed 1`,
 			tmpl: `<imaginaryelement>{{ . }}</imaginaryelement>`,
 			want: `actions must not occur in the element content context of a "imaginaryelement" element`,
 		},
 		{
-			desc: `non-whitelisted element name disallowed 2`,
+			desc: `disallowed element name disallowed 2`,
 			tmpl: `<base title="{{ . }}">`,
 			want: `actions must not occur in the "title" attribute value context of a "base" element`,
 		},
 		{
-			desc: `non-whitelisted element name disallowed 3`,
+			desc: `disallowed element name disallowed 3`,
 			tmpl: `<meta title="{{ . }}">`,
 			want: `actions must not occur in the "title" attribute value context of a "meta" element`,
 		},
 		{
-			desc: `non-whitelisted element name disallowed 4`,
+			desc: `disallowed element name disallowed 4`,
 			tmpl: `<object src="{{ . }}"></object>`,
 			want: `actions must not occur in the "src" attribute value context of a "object" element`,
 		},
 		{
-			desc: `non-whitelisted element name disallowed 5`,
+			desc: `disallowed element name disallowed 5`,
 			tmpl: `<object>{{ . }}</object>`,
 			want: `actions must not occur in the element content context of a "object" element`,
 		},

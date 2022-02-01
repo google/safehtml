@@ -14,7 +14,7 @@ func TestValidateURLPrefix(t *testing.T) {
 		in    string
 		valid bool
 	}{
-		// Whitelisted schemes or MIME types.
+		// Allowed schemes or MIME types.
 		{`http:`, true},
 		{`http://www.foo.com/`, true},
 		{`https://www.foo.com/`, true},
@@ -26,7 +26,7 @@ func TestValidateURLPrefix(t *testing.T) {
 		// Leading and trailing newlines.
 		{"\nhttp:", false},
 		{"http:\n", false},
-		// Non-whitelisted schemes or MIME types.
+		// Disallowed schemes or MIME types.
 		{`tel:+1-234-567-8901`, false},
 		{`javascript:foo()`, false},
 		{`data:image/png,abc`, false},

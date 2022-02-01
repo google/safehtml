@@ -212,7 +212,7 @@ func TestTrustedResourceURLAppend(t *testing.T) {
 			toAppend: "sub/path/1?a=1&b=2",
 			wantURL:  "//base.url/sub%2fpath%2f1%3fa%3d1%26b%3d2",
 		}, {
-			name:     "whitelisted chars appended",
+			name:     "allowed chars appended",
 			baseURL:  TrustedResourceURLFromConstant("//base.url/"),
 			toAppend: "-_.*",
 			wantURL:  "//base.url/-_.%2a",

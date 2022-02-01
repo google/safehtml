@@ -165,9 +165,9 @@ func sanitizationContextForAttrVal(element, attr, linkRel string) (sanitizationC
 	if sc, ok := elementSpecificAttrValSanitizationContext[attr][element]; ok {
 		return sc, nil
 	}
-	sc, isWhitelistedAttr := globalAttrValSanitizationContext[attr]
-	_, isWhitelistedElement := elementContentSanitizationContext[element]
-	if isWhitelistedAttr && (isWhitelistedElement || allowedVoidElements[element]) {
+	sc, isAllowedAttr := globalAttrValSanitizationContext[attr]
+	_, isAllowedElement := elementContentSanitizationContext[element]
+	if isAllowedAttr && (isAllowedElement || allowedVoidElements[element]) {
 		// Only sanitize attributes that appear in elements whose semantics are known.
 		// Thes attributes might have different semantics in other standard or custom
 		// elements that our sanitization policy does not handle correctly.

@@ -33,7 +33,7 @@ var startsWithFullySpecifiedSchemePattern = regexp.MustCompile(
 // or percent-encoding character triplet.
 //
 // If the prefix contains a fully-specified scheme component, it is considered safe only if
-// it starts with a whitelisted scheme. See safehtml.URLSanitized for more details.
+// it starts with an allowed scheme. See safehtml.URLSanitized for more details.
 //
 // Otherwise, the prefix is safe only if it contains '/', '?', or '#', since the presence of any
 // of these runes ensures that this prefix, when combined with some arbitrary suffix, cannot be

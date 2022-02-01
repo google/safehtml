@@ -54,7 +54,7 @@ const InnocuousURL = "about:invalid#zGoSafez"
 // absolute-path-relative, or path-relative. See
 // http://url.spec.whatwg.org/#concept-relative-url.
 //
-// url may also be a base64 data URL with a whitelisted audio, image or video MIME type.
+// url may also be a base64 data URL with an allowed audio, image or video MIME type.
 //
 // No attempt is made at validating that the URL percent-decodes to structurally valid or
 // interchange-valid UTF-8 since the percent-decoded representation is unsafe to use in an
@@ -67,9 +67,9 @@ func URLSanitized(url string) URL {
 }
 
 // safeURLPattern matches URLs that
-//    (a) Start with a scheme in a whitelist (http, https, mailto, ftp); or
+//    (a) Start with a scheme in an allowlist (http, https, mailto, ftp); or
 //    (b) Contain no scheme. To ensure that the URL cannot be interpreted as a
-//        non-whitelisted scheme URL, ':' may only appear after one of the runes [/?#].
+//        disallowed scheme URL, ':' may only appear after one of the runes [/?#].
 //
 // The origin (RFC 6454) in which a URL is loaded depends on
 // its scheme.  We assume that the scheme used by the current document is HTTPS, HTTP, or
@@ -80,7 +80,7 @@ func URLSanitized(url string) URL {
 // The position of the first colon (':') character determines whether a URL is absolute or relative.
 // Looking at the prefix leading up to the first colon allows us to identify relative and absolute URLs,
 // extract the scheme, and minimize the risk of a user-agent concluding a URL specifies a scheme not in
-// our whitelist.
+// our allowlist.
 //
 // According to RFC 3986 Section 3, the normative interpretation of the canonicial WHATWG specification
 // (https://url.spec.whatwg.org/#url-scheme-string), colons can appear in a URL in these locations:
@@ -107,9 +107,9 @@ var safeMIMETypePattern = regexp.MustCompile(`^(?:audio/(?:3gpp2|3gpp|aac|midi|m
 
 // isSafeURL matches url to a subset of URLs that will not cause script execution if used in
 // a URL context within a HTML document. Specifically, this method returns true if url:
-//    (a) Starts with a scheme in the default whitelist (http, https, mailto, ftp); or
+//    (a) Starts with a scheme in the default allowlist (http, https, mailto, ftp); or
 //    (b) Contains no scheme. To ensure that the URL cannot be interpreted as a
-//        non-whitelisted scheme URL, the runes ':', and '&' may only appear
+//        disallowed scheme URL, the runes ':', and '&' may only appear
 //        after one of the runes [/?#].
 func isSafeURL(url string) bool {
 	// Ignore case.

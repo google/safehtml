@@ -47,7 +47,7 @@ html/template because it:
     safehtml.Script) to be used in these contexts, since they are already
     guaranteed to be safe.
   * Emits an error if user data is interpolated in unsafe contexts, such as
-    within non-whitelisted elements or unquoted attribute values.
+    within disallowed elements or unquoted attribute values.
   * Only loads templates from trusted sources. This ensures that the contents
     of the template are always under programmer control. More details are
     provided below in "Trusted template sources".
@@ -178,7 +178,7 @@ The following table describes these sanitization contexts.
   +--------------------------------------------------------------------------------------------------------------+
   | Identifier         | <h1 id="{{.}}">Hello</h1>        | safehtml.Identifier*         | N/A                   |
   +--------------------------------------------------------------------------------------------------------------+
-  | Enumerated value   | <a target="{{.}}">Link</a>       | Whitelisted string values    | N/A                   |
+  | Enumerated value   | <a target="{{.}}">Link</a>       | Allowed string values        | N/A                   |
   |                    |                                  | ("_self" or "_blank" for     |                       |
   |                    |                                  | the given example)           |                       |
   +--------------------------------------------------------------------------------------------------------------+
@@ -275,7 +275,7 @@ not end in an incomplete HTML character reference (e.g. https&#1) or incomplete
 percent-encoding character triplet (e.g. /fo%6), does not contain whitespace or control
 characters, and one of the following is true:
   * The prefix has a safe scheme (i.e. http, https, mailto, or ftp).
-  * The prefix has the data scheme with base64 encoding and a whitelisted audio, image,
+  * The prefix has the data scheme with base64 encoding and an allowed audio, image,
     or video MIME type (e.g. data:img/jpeg;base64, data:video/mp4;base64).
   * The prefix has no scheme at all, and cannot be interpreted as a scheme prefix (e.g. /path).
 

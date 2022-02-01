@@ -79,7 +79,7 @@ type Style struct {
 //
 // See also http://www.w3.org/TR/css3-syntax/.
 func StyleFromConstant(style stringConstant) Style {
-	// TODO: implement UTF-8 interchange-validity checks and blacklisting of newlines
+	// TODO: implement UTF-8 interchange-validity checks and blocking of newlines
 	// (including Unicode ones) and other whitespace characters (\t, \f) for Style and other safe types
 	// in this package.
 	if strings.ContainsAny(string(style), "<>") {
@@ -125,7 +125,7 @@ type StyleProperties struct {
 	// Non-conforming values will be replaced by InnocuousPropertyValue in
 	// StyleFromProperties.
 	Display string
-	// The following values can only contain whitelisted runes, that is, alphanumerics,
+	// The following values can only contain allowed runes, that is, alphanumerics,
 	// space, tab, and the set [+-.!#%_/*]. In addition, comment markers "//", "/*",
 	// and "*/" are disallowed. Non-conforming values will be replaced by
 	// InnocuousPropertyValue in StyleFromProperties.
