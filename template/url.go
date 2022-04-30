@@ -25,7 +25,7 @@ var urlPrefixValidators = map[sanitizationContext]func(string) error{
 // startsWithFullySpecifiedSchemePattern matches strings that have a fully-specified scheme component.
 // See RFC 3986 Section 3.
 var startsWithFullySpecifiedSchemePattern = regexp.MustCompile(
-	`^[[:alpha:]](?:[[:alnum:]]|[+-.])*:`)
+	`^[[:alpha:]](?:[[:alnum:]]|[+.-])*:`)
 
 // validateURLPrefix validates if the given non-empty prefix is a safe safehtml.URL prefix.
 //
