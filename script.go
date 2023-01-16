@@ -53,7 +53,7 @@ func ScriptFromConstant(script stringConstant) Script {
 
 // ScriptFromDataAndConstant constructs a Script of the form
 //
-//   var name = data; script
+//	var name = data; script
 //
 // where name is the supplied variable name, data is the supplied data value
 // encoded as JSON using encoding/json.Marshal, and script is the supplied

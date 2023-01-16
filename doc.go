@@ -7,5 +7,4 @@
 // Package safehtml provides immutable string-like types which represent values that
 // are guaranteed to be safe, by construction or by escaping or sanitization, to use
 // in various HTML contexts and with various DOM APIs.
-//
 package safehtml

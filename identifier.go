@@ -15,7 +15,7 @@ import (
 // contexts as an identifier for HTML elements. For example, it is unsafe to
 // insert an untrusted string into a
 //
-//   <img name="..."></img>
+//	<img name="..."></img>
 //
 // context since the string may be controlled by an attacker who can assign it
 // a value that masks existing DOM properties (i.e. DOM Clobbering). An

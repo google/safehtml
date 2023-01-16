@@ -39,7 +39,9 @@ func StyleSheetFromConstant(styleSheet stringConstant) StyleSheet {
 }
 
 // CSSRule constructs a StyleSheet containng a CSS rule of the form:
-//   selector{style}
+//
+//	selector{style}
+//
 // It returns an error if selector contains disallowed characters or unbalanced
 // brackets.
 //

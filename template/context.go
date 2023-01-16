@@ -56,7 +56,9 @@ func (c context) eq(d context) bool {
 // HTML5 parsing algorithm because a single token production in the HTML
 // grammar may contain embedded actions in a template. For instance, the quoted
 // HTML attribute produced by
-//     <div title="Hello {{.World}}">
+//
+//	<div title="Hello {{.World}}">
+//
 // is a single token in HTML's grammar but in a template spans several nodes.
 type state uint8
 

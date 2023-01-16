@@ -19,16 +19,16 @@ import (
 // (cross-site scripting) when evaluated as CSS in a browser.
 //
 // Style's string representation can safely be:
-//    * Interpolated as the content of a quoted HTML style attribute. However, the
-//      Style string must be HTML-attribute-escaped before interpolation.
-//    * Interpolated as the content of a {}-wrapped block within a StyleSheet.
-//      '<' runes in the Style string must be CSS-escaped before interpolation.
-//      The Style string is also guaranteed not to be able to introduce new
-//      properties or elide existing ones.
-//    * Interpolated as the content of a {}-wrapped block within an HTML <style>
-//      element. '<' runes in the Style string must be CSS-escaped before interpolation.
-//    * Assigned to the style property of a DOM node. The Style string should not
-//      be escaped before being assigned to the property.
+//   - Interpolated as the content of a quoted HTML style attribute. However, the
+//     Style string must be HTML-attribute-escaped before interpolation.
+//   - Interpolated as the content of a {}-wrapped block within a StyleSheet.
+//     '<' runes in the Style string must be CSS-escaped before interpolation.
+//     The Style string is also guaranteed not to be able to introduce new
+//     properties or elide existing ones.
+//   - Interpolated as the content of a {}-wrapped block within an HTML <style>
+//     element. '<' runes in the Style string must be CSS-escaped before interpolation.
+//   - Assigned to the style property of a DOM node. The Style string should not
+//     be escaped before being assigned to the property.
 //
 // In addition, values of this type are composable, that is, for any two Style
 // values |style1| and |style2|, style1.style() + style2.style() is itself a
@@ -44,38 +44,40 @@ type Style struct {
 // style string does not pass basic syntax checks.
 //
 // Users of this function must ensure themselves that the style:
-//    * Does not contain unsafe CSS.
-//    * Does not contain literal angle brackets. Otherwise, it could be unsafe to
-//      place a Style into the contents of a <style> element where it can't be
-//      HTML escaped (see http://www.w3.org/International/questions/qa-escapes).
-//      For example, if the Style containing
-//      "font: 'foo <style/><script>evil</script>'" was interpolated within a
-//      <style> tag, it would then break out of the style context into HTML.
-//    * Does not end in a property value or property name context.
-//      For example, a value of "background:url(\"" or "font-" does not satisfy
-//      the Style type contract. This rule is enforced to ensure composability:
-//      concatenating two incomplete strings that themselves do not contain unsafe
-//      CSS can result in an overall string that does. For example, if
-//      "javascript:evil())\"" is appended to "background:url(\"", the resulting
-//      string may result in the execution of a malicious script.
+//   - Does not contain unsafe CSS.
+//   - Does not contain literal angle brackets. Otherwise, it could be unsafe to
+//     place a Style into the contents of a <style> element where it can't be
+//     HTML escaped (see http://www.w3.org/International/questions/qa-escapes).
+//     For example, if the Style containing
+//     "font: 'foo <style/><script>evil</script>'" was interpolated within a
+//     <style> tag, it would then break out of the style context into HTML.
+//   - Does not end in a property value or property name context.
+//     For example, a value of "background:url(\"" or "font-" does not satisfy
+//     the Style type contract. This rule is enforced to ensure composability:
+//     concatenating two incomplete strings that themselves do not contain unsafe
+//     CSS can result in an overall string that does. For example, if
+//     "javascript:evil())\"" is appended to "background:url(\"", the resulting
+//     string may result in the execution of a malicious script.
 //
 // The style may, however, contain literal single or double quotes (for example,
 // in the "content" property). Therefore, the entire style string must be
 // escaped when used in a style attribute.
 //
 // The following example values comply with Style's type contract:
-//    width: 1em;
-//    height:1em;
-//    width: 1em;height: 1em;
-//    background:url('http://url');
+//
+//	width: 1em;
+//	height:1em;
+//	width: 1em;height: 1em;
+//	background:url('http://url');
 //
 // In addition, the empty string is safe for use in a style attribute.
 //
 // The following example values do NOT comply with this type's contract:
-//    background: red    --- missing a trailing semi-colon
-//    background:        --- missing a value and a trailing semi-colon
-//    1em                --- missing an attribute name, which provides context
-//                           for the value
+//
+//	background: red    --- missing a trailing semi-colon
+//	background:        --- missing a value and a trailing semi-colon
+//	1em                --- missing an attribute name, which provides context
+//	                       for the value
 //
 // See also http://www.w3.org/TR/css3-syntax/.
 func StyleFromConstant(style stringConstant) Style {
@@ -106,7 +108,6 @@ func (s Style) String() string {
 // For example, BackgroundPosition contains the value for the
 // "background-position" property, and Display contains the value for the "display"
 // property.
-//
 type StyleProperties struct {
 	// BackgroundImageURLs contains URL values for the background-image property.
 	// These values val_1, val_2, ..., val_n will be passed through URLSanitized and CSS-escaped in
@@ -154,7 +155,9 @@ var identifierPattern = regexp.MustCompile(`^[a-zA-Z][-a-zA-Z]+$`)
 
 // StyleFromProperties constructs a Style containining properties whose values
 // are set in properties. The contents of the returned Style will be of the form
-//    property_1:val_1;property2:val_2; ... ;property_n:val_n;
+//
+//	property_1:val_1;property2:val_2; ... ;property_n:val_n;
+//
 // This syntax is defined in https://www.w3.org/TR/css-style-attr/.
 //
 // All property values are validated and, if necessary, modified to ensure that their
@@ -251,14 +254,14 @@ const InnocuousPropertyValue = "zGoSafezInvalidPropertyValue"
 // Specifically, it matches string where every '*' or '/' is followed by end-of-text or a safe rune
 // (i.e. alphanumberics or runes in the set [+-.!#%_ \t]). This regex ensures that the following
 // are disallowed:
-//    * "/*" and "*/", which are CSS comment markers.
-//    * "//", even though this is not a comment marker in the CSS specification. Disallowing
-//      this string minimizes the chance that browser peculiarities or parsing bugs will allow
-//      sanitization to be bypassed.
-//    * '(' and ')', which can be used to call functions.
-//    * ',', since it can be used to inject extra values into a property.
-//    * Runes which could be matched on CSS error recovery of a previously malformed token, such as '@'
-//      and ':'. See http://www.w3.org/TR/css3-syntax/#error-handling.
+//   - "/*" and "*/", which are CSS comment markers.
+//   - "//", even though this is not a comment marker in the CSS specification. Disallowing
+//     this string minimizes the chance that browser peculiarities or parsing bugs will allow
+//     sanitization to be bypassed.
+//   - '(' and ')', which can be used to call functions.
+//   - ',', since it can be used to inject extra values into a property.
+//   - Runes which could be matched on CSS error recovery of a previously malformed token, such as '@'
+//     and ':'. See http://www.w3.org/TR/css3-syntax/#error-handling.
 var safeRegularPropertyValuePattern = regexp.MustCompile(`^(?:[*/]?(?:[0-9a-zA-Z+-.!#%_ \t]|$))*$`)
 
 // safeEnumPropertyValuePattern matches strings that are safe to use as enumerated property values.

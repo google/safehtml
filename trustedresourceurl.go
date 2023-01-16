@@ -21,7 +21,7 @@ import (
 // CSS and other sensitive resources without the risk of untrusted code execution.
 // For example, it is unsafe to insert a plain string in a
 //
-//     <script src=“...”></script>
+//	<script src=“...”></script>
 //
 // context since the URL may originate from untrusted user input and the
 // script it is pointing to may thus be controlled by an attacker. It is,
@@ -108,10 +108,10 @@ func TrustedResourceURLFromConstant(url stringConstant) TrustedResourceURL {
 // Arguments that do not match any label in the format string are ignored.
 //
 // The format string must have a prefix of one of the following forms:
-//    * `https://<origin>/`
-//    * `//<origin>/`
-//    * `/<pathStart>`
-//    * `about:blank#`
+//   - `https://<origin>/`
+//   - `//<origin>/`
+//   - `/<pathStart>`
+//   - `about:blank#`
 //
 // `<origin>` must contain only alphanumerics, '.', ':', '[', ']', or '-', and
 // `<pathStart>` is any character except `/` and `\`.
@@ -180,10 +180,10 @@ func (t TrustedResourceURL) String() string {
 //
 // This function can only be used if the TrustedResourceURL has a prefix of one of the following
 // forms:
-//    * `https://<origin>/`
-//    * `//<origin>/`
-//    * `/<pathStart>`
-//    * `about:blank#`
+//   - `https://<origin>/`
+//   - `//<origin>/`
+//   - `/<pathStart>`
+//   - `about:blank#`
 //
 // `<origin>` must contain only alphanumerics, '.', ':', '[', ']', or '-', and
 // `<pathStart>` is any character except `/` and `\`.

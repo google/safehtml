@@ -40,7 +40,6 @@ type HTMLer interface {
 //
 // text is coerced to interchange valid, so the resulting HTML contains only
 // valid UTF-8 characters which are legal in HTML and XML.
-//
 func HTMLEscaped(text string) HTML {
 	return HTML{escapeAndCoerceToInterchangeValid(text)}
 }

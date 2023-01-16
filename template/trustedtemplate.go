@@ -13,7 +13,6 @@ package template
 // In order to ensure that an attacker cannot influence the TrustedTemplate
 // value, a TrustedTemplate can be instantiated only from untyped string constants,
 // and never from arbitrary string values potentially representing untrusted user input.
-//
 type TrustedTemplate struct {
 	// We declare a TrustedTemplate not as a string but as a struct wrapping a string
 	// to prevent construction of TrustedTemplate values through string conversion.

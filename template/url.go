@@ -89,9 +89,9 @@ var containsWhitespaceOrControlPattern = regexp.MustCompile(`[[:space:]]|[[:cntr
 
 // decodeURLPrefix returns the given prefix after it has been HTML-unescaped.
 // It returns an error if the prefix:
-//    * ends in an incomplete HTML character reference before HTML-unescaping,
-//    * ends in an incomplete percent-encoding character triplet after HTML-unescaping, or
-//    * contains whitespace before or after HTML-unescaping.
+//   - ends in an incomplete HTML character reference before HTML-unescaping,
+//   - ends in an incomplete percent-encoding character triplet after HTML-unescaping, or
+//   - contains whitespace before or after HTML-unescaping.
 func decodeURLPrefix(prefix string) (string, error) {
 	if containsWhitespaceOrControlPattern.MatchString(prefix) {
 		return "", fmt.Errorf("URL prefix %q contains whitespace or control characters", prefix)

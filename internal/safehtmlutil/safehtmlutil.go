@@ -18,10 +18,10 @@ import (
 // TrustedResourceURL prefix.
 //
 // TrustedResourceURL prefixes must start with one of the following:
-//    * `https://<origin>/`
-//    * `//<origin>/`
-//    * `/<pathStart>`
-//    * `about:blank#`
+//   - `https://<origin>/`
+//   - `//<origin>/`
+//   - `/<pathStart>`
+//   - `about:blank#`
 //
 // `<origin>` must contain only alphanumerics, '.', ':', '[', ']', or '-'.
 // These restrictions do not enforce a well-formed domain name, so '.' and '1.2' are valid.

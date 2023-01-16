@@ -67,9 +67,10 @@ func URLSanitized(url string) URL {
 }
 
 // safeURLPattern matches URLs that
-//    (a) Start with a scheme in an allowlist (http, https, mailto, ftp); or
-//    (b) Contain no scheme. To ensure that the URL cannot be interpreted as a
-//        disallowed scheme URL, ':' may only appear after one of the runes [/?#].
+//
+//	(a) Start with a scheme in an allowlist (http, https, mailto, ftp); or
+//	(b) Contain no scheme. To ensure that the URL cannot be interpreted as a
+//	    disallowed scheme URL, ':' may only appear after one of the runes [/?#].
 //
 // The origin (RFC 6454) in which a URL is loaded depends on
 // its scheme.  We assume that the scheme used by the current document is HTTPS, HTTP, or
@@ -84,14 +85,14 @@ func URLSanitized(url string) URL {
 //
 // According to RFC 3986 Section 3, the normative interpretation of the canonicial WHATWG specification
 // (https://url.spec.whatwg.org/#url-scheme-string), colons can appear in a URL in these locations:
-//    * A colon after a non-empty run of (ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )) ends a scheme.
-//      If the colon after the scheme is not followed by "//" then any subsequent colons are part
-//      of an opaque URI body.
-//    * Otherwise, a colon after a hash (#) must be in the fragment.
-//    * Otherwise, a colon after a (?) must be in the query.
-//    * Otherwise, a colon after a single solidus ("/") must be in the path.
-//    * Otherwise, a colon after a double solidus ("//") must be in the authority (before port).
-//    * Otherwise, a colon after a valid protocol must be in the opaque part of the URL.
+//   - A colon after a non-empty run of (ALPHA *( ALPHA / DIGIT / "+" / "-" / "." )) ends a scheme.
+//     If the colon after the scheme is not followed by "//" then any subsequent colons are part
+//     of an opaque URI body.
+//   - Otherwise, a colon after a hash (#) must be in the fragment.
+//   - Otherwise, a colon after a (?) must be in the query.
+//   - Otherwise, a colon after a single solidus ("/") must be in the path.
+//   - Otherwise, a colon after a double solidus ("//") must be in the authority (before port).
+//   - Otherwise, a colon after a valid protocol must be in the opaque part of the URL.
 var safeURLPattern = regexp.MustCompile(`^(?:(?:https?|mailto|ftp):|[^:/?#]*(?:[/?#]|$))`)
 
 // dataURLPattern matches base-64 data URLs (RFC 2397), with the first capture group being the media type
@@ -107,10 +108,11 @@ var safeMIMETypePattern = regexp.MustCompile(`^(?:audio/(?:3gpp2|3gpp|aac|midi|m
 
 // isSafeURL matches url to a subset of URLs that will not cause script execution if used in
 // a URL context within a HTML document. Specifically, this method returns true if url:
-//    (a) Starts with a scheme in the default allowlist (http, https, mailto, ftp); or
-//    (b) Contains no scheme. To ensure that the URL cannot be interpreted as a
-//        disallowed scheme URL, the runes ':', and '&' may only appear
-//        after one of the runes [/?#].
+//
+//	(a) Starts with a scheme in the default allowlist (http, https, mailto, ftp); or
+//	(b) Contains no scheme. To ensure that the URL cannot be interpreted as a
+//	    disallowed scheme URL, the runes ':', and '&' may only appear
+//	    after one of the runes [/?#].
 func isSafeURL(url string) bool {
 	// Ignore case.
 	url = strings.ToLower(url)

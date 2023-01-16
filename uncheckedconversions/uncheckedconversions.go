@@ -14,9 +14,9 @@
 // template systems.
 //
 // Example appropriate uses include:
-//   * Wrapping the result of general-purpose or application-specific content
+//   - Wrapping the result of general-purpose or application-specific content
 //     sanitizer libraries.
-//   * Wrapping the result of rendering strictly contextually autoescaping
+//   - Wrapping the result of rendering strictly contextually autoescaping
 //     templates (assuming the template's autoescaping implementation is indeed
 //     strict enough to support the type contract).
 package uncheckedconversions
@@ -35,7 +35,6 @@ var trustedResourceURL = raw.TrustedResourceURL.(func(string) safehtml.TrustedRe
 var identifier = raw.Identifier.(func(string) safehtml.Identifier)
 
 // HTMLFromStringKnownToSatisfyTypeContract converts a string into a HTML.
-//
 func HTMLFromStringKnownToSatisfyTypeContract(s string) safehtml.HTML {
 	return html(s)
 }
@@ -58,38 +57,40 @@ func ScriptFromStringKnownToSatisfyTypeContract(s string) safehtml.Script {
 // StyleFromStringKnownToSatisfyTypeContract converts a string into a Style.
 //
 // Users of thie function must ensure themselves that the string:
-//    * Does not contain unsafe CSS.
-//    * Does not contain literal angle brackets. Otherwise, it could be unsafe to
-//      place a Style into the contents of a <style> element where it can't be
-//      HTML escaped (see http://www.w3.org/International/questions/qa-escapes).
-//      For example, if the Style containing
-//      "font: 'foo <style/><script>evil</script>'" was interpolated within a
-//      <style> tag, it would then break out of the style context into HTML.
-//    * Does not end in a property value or property name context.
-//      For example, a value of "background:url(\"" or "font-" does not satisfy
-//      the Style type contract. This rule is enforced to ensure composability:
-//      concatenating two incomplete strings that themselves do not contain unsafe
-//      CSS can result in an overall string that does. For example, if
-//      "javascript:evil())\"" is appended to "background:url(\"", the resulting
-//      string may result in the execution of a malicious script.
+//   - Does not contain unsafe CSS.
+//   - Does not contain literal angle brackets. Otherwise, it could be unsafe to
+//     place a Style into the contents of a <style> element where it can't be
+//     HTML escaped (see http://www.w3.org/International/questions/qa-escapes).
+//     For example, if the Style containing
+//     "font: 'foo <style/><script>evil</script>'" was interpolated within a
+//     <style> tag, it would then break out of the style context into HTML.
+//   - Does not end in a property value or property name context.
+//     For example, a value of "background:url(\"" or "font-" does not satisfy
+//     the Style type contract. This rule is enforced to ensure composability:
+//     concatenating two incomplete strings that themselves do not contain unsafe
+//     CSS can result in an overall string that does. For example, if
+//     "javascript:evil())\"" is appended to "background:url(\"", the resulting
+//     string may result in the execution of a malicious script.
 //
 // The string may, however, contain literal single or double quotes (for example,
 // in the "content" property). Therefore, the entire style string must be
 // escaped when used in a style attribute.
 //
 // The following example values comply with Style's type contract:
-//    width: 1em;
-//    height:1em;
-//    width: 1em;height: 1em;
-//    background:url('http://url');
+//
+//	width: 1em;
+//	height:1em;
+//	width: 1em;height: 1em;
+//	background:url('http://url');
 //
 // In addition, the empty string is safe for use in a style attribute.
 //
 // The following example values do NOT comply with this type's contract:
-//    background: red    --- missing a trailing semi-colon
-//    background:        --- missing a value and a trailing semi-colon
-//    1em                --- missing an attribute name, which provides context
-//                           for the value
+//
+//	background: red    --- missing a trailing semi-colon
+//	background:        --- missing a value and a trailing semi-colon
+//	1em                --- missing an attribute name, which provides context
+//	                       for the value
 //
 // See also http://www.w3.org/TR/css3-syntax/.
 func StyleFromStringKnownToSatisfyTypeContract(s string) safehtml.Style {
@@ -113,19 +114,16 @@ func StyleSheetFromStringKnownToSatisfyTypeContract(s string) safehtml.StyleShee
 }
 
 // URLFromStringKnownToSatisfyTypeContract converts a string into a URL.
-//
 func URLFromStringKnownToSatisfyTypeContract(s string) safehtml.URL {
 	return url(s)
 }
 
 // TrustedResourceURLFromStringKnownToSatisfyTypeContract converts a string into a TrustedResourceURL.
-//
 func TrustedResourceURLFromStringKnownToSatisfyTypeContract(s string) safehtml.TrustedResourceURL {
 	return trustedResourceURL(s)
 }
 
 // IdentifierFromStringKnownToSatisfyTypeContract converts a string into a Identifier.
-//
 func IdentifierFromStringKnownToSatisfyTypeContract(s string) safehtml.Identifier {
 	return identifier(s)
 }
