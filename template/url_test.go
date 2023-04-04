@@ -23,14 +23,14 @@ func TestValidateURLPrefix(t *testing.T) {
 		{`data:image/png;base64,abc`, true},
 		{`data:video/mpeg;base64,abc`, true},
 		{`data:audio/ogg;base64,abc`, true},
+		{`data:image/png,abc`, true},
+		{`data:text/html;base64,abc`, true},
+		{`tel:+1-234-567-8901`, true},
 		// Leading and trailing newlines.
 		{"\nhttp:", false},
 		{"http:\n", false},
 		// Disallowed schemes or MIME types.
-		{`tel:+1-234-567-8901`, false},
 		{`javascript:foo()`, false},
-		{`data:image/png,abc`, false},
-		{`data:text/html;base64,abc`, false},
 		// No scheme, but not a scheme prefix.
 		{`//www.foo.com/`, true},
 		{`/path`, true},

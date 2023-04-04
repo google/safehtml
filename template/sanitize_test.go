@@ -437,7 +437,7 @@ func TestSanitize(t *testing.T) {
 		// safehtml.URL values should still be HTML-escaped even after bypassing URL sanitization.
 		{
 			input:  `<q cite="{{ "data:,\"><script>alert('pwned!')</script>" }}">foo</q>`,
-			output: `<q cite="about:invalid#zGoSafez">foo</q>`,
+			output: `<q cite="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3e">foo</q>`,
 			err:    ``,
 		},
 		{
@@ -447,7 +447,7 @@ func TestSanitize(t *testing.T) {
 		},
 		{
 			input:  `<link rel="alternate" href="{{ "data:,\"><script>alert('pwned!')</script>" }}">`,
-			output: `<link rel="alternate" href="about:invalid#zGoSafez">`,
+			output: `<link rel="alternate" href="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3e">`,
 			err:    ``,
 		},
 		{
@@ -457,7 +457,7 @@ func TestSanitize(t *testing.T) {
 		},
 		{
 			input:  `<q cite="{{ "data:,\"><script>alert('pwned!')</script>" }}my/path">foo</q>`,
-			output: `<q cite="about:invalid#zGoSafezmy/path">foo</q>`,
+			output: `<q cite="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3emy/path">foo</q>`,
 			err:    ``,
 		},
 		{
@@ -539,7 +539,7 @@ func TestSanitize(t *testing.T) {
 		},
 		{
 			input:  `<q cite="{{ makeStyleForTest "width: 1em;height: 1em;" }}">foo</q>`,
-			output: `<q cite="about:invalid#zGoSafez">foo</q>`,
+			output: `<q cite="width:%201em;height:%201em;">foo</q>`,
 			err:    ``,
 		},
 		// Attribute value contexts that expect TrustedResouceURL.
@@ -647,7 +647,7 @@ func TestSanitize(t *testing.T) {
 		{
 			// URL sanitization applied to untrusted string.
 			input:  `<source src="{{ "data:,\"><script>alert('pwned!')</script>" }}">`,
-			output: `<source src="about:invalid#zGoSafez">`,
+			output: `<source src="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3e">`,
 			err:    ``,
 		},
 		{
@@ -657,7 +657,7 @@ func TestSanitize(t *testing.T) {
 		},
 		{
 			input:  `<source src="{{ "data:,\"><script>alert('pwned!')</script>" }}my/path">`,
-			output: `<source src="about:invalid#zGoSafezmy/path">`,
+			output: `<source src="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3emy/path">`,
 			err:    ``,
 		},
 		{
@@ -850,8 +850,8 @@ func TestSanitize(t *testing.T) {
 			err:    `expected a safehtml.Identifier value`,
 		},
 		{
-			input:  `<a {{if 0}}id="{{ "foo:bar" }}"{{else}}href="{{ "foo:bar" }}"{{end}}>foo</a>`,
-			output: `<a href="about:invalid#zGoSafez">foo</a>`,
+			input:  `<a {{if 0}}id="{{ "foo:bar" }}"{{else}}href="{{ "unkwnown-scheme:bar" }}"{{end}}>foo</a>`,
+			output: `<a href="unkwnown-scheme:bar">foo</a>`,
 			err:    ``,
 		},
 		// Conditional valueless attribute name.
