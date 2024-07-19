@@ -401,6 +401,7 @@ var elementContentSanitizationContext = map[string]sanitizationContext{
 	"menu":       sanitizationContextHTML,
 	"meter":      sanitizationContextHTML,
 	"nav":        sanitizationContextHTML,
+	"nobr":       sanitizationContextHTML,
 	"noscript":   sanitizationContextHTML,
 	"ol":         sanitizationContextHTML,
 	"optgroup":   sanitizationContextHTML,
