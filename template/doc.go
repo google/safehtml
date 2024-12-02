@@ -220,7 +220,7 @@ More details can be found below in "Substitutions in URLs".
 
 In attribute value contexts, action outputs are always HTML-escaped after
 context-specific sanitization to ensure that the attribute values cannot change
-change the structure of the surrounding HTML tag. In URL or TrustedResourceURL
+the structure of the surrounding HTML tag. In URL or TrustedResourceURL
 sanitization contexts, action outputs are additionally URL-normalized to reduce
 the likelihood of downstream URL-parsing bugs. For example, the template
 
