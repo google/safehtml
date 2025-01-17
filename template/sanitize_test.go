@@ -437,12 +437,12 @@ func TestSanitize(t *testing.T) {
 		// safehtml.URL values should still be HTML-escaped even after bypassing URL sanitization.
 		{
 			input:  `<q cite="{{ "data:,\"><script>alert('pwned!')</script>" }}">foo</q>`,
-			output: `<q cite="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3e">foo</q>`,
+			output: `<q cite="data:,&#34;&gt;&lt;script&gt;alert(&#39;pwned!&#39;)&lt;/script&gt;">foo</q>`,
 			err:    ``,
 		},
 		{
 			input:  `<q cite="{{ makeURLForTest "data:,\"><script>alert('pwned!')</script>" }}">foo</q>`,
-			output: `<q cite="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3e">foo</q>`,
+			output: `<q cite="data:,&#34;&gt;&lt;script&gt;alert(&#39;pwned!&#39;)&lt;/script&gt;">foo</q>`,
 			err:    ``,
 		},
 		{
@@ -457,7 +457,7 @@ func TestSanitize(t *testing.T) {
 		},
 		{
 			input:  `<q cite="{{ "data:,\"><script>alert('pwned!')</script>" }}my/path">foo</q>`,
-			output: `<q cite="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3emy/path">foo</q>`,
+			output: `<q cite="data:,&#34;&gt;&lt;script&gt;alert(&#39;pwned!&#39;)&lt;/script&gt;my/path">foo</q>`,
 			err:    ``,
 		},
 		{
@@ -467,12 +467,12 @@ func TestSanitize(t *testing.T) {
 		},
 		{
 			input:  `<q cite="{{ makeURLForTest "http://www.foo.com/" }}main?a={{ "b&c=d" }}">foo</q>`,
-			output: `<q cite="http://www.foo.com/main?a=b%26c%3dd">foo</q>`,
+			output: `<q cite="http://www.foo.com/main?a=b&amp;c=d">foo</q>`,
 			err:    ``,
 		},
 		{
 			input:  `<q cite="{{ makeURLForTest "http://www.foo.com/" }}main?a={{ "w&x" }}&b={{ "y#z" }}">foo</q>`,
-			output: `<q cite="http://www.foo.com/main?a=w%26x&b=y%23z">foo</q>`,
+			output: `<q cite="http://www.foo.com/main?a=w&amp;x&b=y#z">foo</q>`,
 			err:    ``,
 		},
 		{
@@ -482,17 +482,17 @@ func TestSanitize(t *testing.T) {
 		},
 		{
 			input:  `<q cite="/foo?q={{ "bar&x=baz" }}">foo</q>`,
-			output: `<q cite="/foo?q=bar%26x%3dbaz">foo</q>`,
+			output: `<q cite="/foo?q=bar&amp;x=baz">foo</q>`,
 			err:    ``,
 		},
 		{
 			input:  `<q cite="/foo?q={{ "bar&x=baz" }}&j={{ "bar&x=baz" }}">foo</q>`,
-			output: `<q cite="/foo?q=bar%26x%3dbaz&j=bar%26x%3dbaz">foo</q>`,
+			output: `<q cite="/foo?q=bar&amp;x=baz&j=bar&amp;x=baz">foo</q>`,
 			err:    ``,
 		},
 		{
 			input:  `<q cite="http://www.foo.com/{{ "multiple/path/segments" }}?q={{ "bar&x=baz" }}">foo</q>`,
-			output: `<q cite="http://www.foo.com/multiple/path/segments?q=bar%26x%3dbaz">foo</q>`,
+			output: `<q cite="http://www.foo.com/multiple/path/segments?q=bar&amp;x=baz">foo</q>`,
 			err:    ``,
 		},
 		{
@@ -501,23 +501,8 @@ func TestSanitize(t *testing.T) {
 			err:    ``,
 		},
 		{
-			input:  `<q cite="j{{ "avascript:alert(1)" }}">foo</q>`,
-			output: ``,
-			err:    `action cannot be interpolated into the "cite" URL attribute value of this "q" element: URL prefix "j" is unsafe; it might be interpreted as part of a scheme`,
-		},
-		{
-			input:  `<q cite="javascript:{{ "alert(1)" }}">foo</q>`,
-			output: ``,
-			err:    `action cannot be interpolated into the "cite" URL attribute value of this "q" element: URL prefix "javascript:" contains an unsafe scheme`,
-		},
-		{
-			input:  `<q cite="  {{ "not interpreted as a URL prefix" }}">foo</q>`,
-			output: ``,
-			err:    `action cannot be interpolated into the "cite" URL attribute value of this "q" element: URL prefix "  " contains whitespace or control characters`,
-		},
-		{
 			input:  `<q cite="{{ "http://www.foo.com/?q=hello\\.world" }}">foo</q>`,
-			output: `<q cite="http://www.foo.com/?q=hello%5c.world">foo</q>`,
+			output: `<q cite="http://www.foo.com/?q=hello\.world">foo</q>`,
 			err:    ``,
 		},
 		{
@@ -539,7 +524,7 @@ func TestSanitize(t *testing.T) {
 		},
 		{
 			input:  `<q cite="{{ makeStyleForTest "width: 1em;height: 1em;" }}">foo</q>`,
-			output: `<q cite="width:%201em;height:%201em;">foo</q>`,
+			output: `<q cite="width: 1em;height: 1em;">foo</q>`,
 			err:    ``,
 		},
 		// Attribute value contexts that expect TrustedResouceURL.
@@ -915,35 +900,35 @@ func TestConditionalURLPrefixError(t *testing.T) {
 	}{
 		// Conditonal URL prefix in attribute value contexts that expect URLs.
 		{
-			`<q cite="{{if .C}}mailto:{{end}}{{ .URLSuffix }}">foo</q>`,
+			`<a href="{{if .C}}mailto:{{end}}{{ .URLSuffix }}">foo</a>`,
 			`actions must not occur after an ambiguous URL prefix`,
 		},
 		{
-			`<q cite="{{if .C}}mailto:{{else}}javascript:{{end}}{{ .URLSuffix }}">foo</q>`,
+			`<a href="{{if .C}}mailto:{{else}}javascript:{{end}}{{ .URLSuffix }}">foo</a>`,
 			`actions must not occur after an ambiguous URL prefix`,
 		},
 		{
-			`<q cite="{{if .C}}mailto{{else}}javascript{{end}}:{{ .URLSuffix }}">foo</q>`,
+			`<a href="{{if .C}}mailto{{else}}javascript{{end}}:{{ .URLSuffix }}">foo</a>`,
 			`actions must not occur after an ambiguous URL prefix`,
 		},
 		{
-			`<q cite="{{if .C}}mailto:{{else if .D}}javascript:{{else}}tel:{{end}}{{ .URLSuffix }}">foo</q>`,
+			`<a href="{{if .C}}mailto:{{else if .D}}javascript:{{else}}tel:{{end}}{{ .URLSuffix }}">foo</a>`,
 			`actions must not occur after an ambiguous URL prefix`,
 		},
 		{
-			`<q cite="{{range .B}}mailto:{{end}}{{ .URLSuffix }}">foo</q>`,
+			`<a href="{{range .B}}mailto:{{end}}{{ .URLSuffix }}">foo</a>`,
 			`actions must not occur after an ambiguous URL prefix`,
 		},
 		{
-			`<q cite="{{range .B}}mailto:{{else}}javascript:{{end}}{{ .URLSuffix }}">foo</q>`,
+			`<a href="{{range .B}}mailto:{{else}}javascript:{{end}}{{ .URLSuffix }}">foo</a>`,
 			`actions must not occur after an ambiguous URL prefix`,
 		},
 		{
-			`<q cite="{{with .C}}mailto:{{end}}{{ .URLSuffix }}">foo</q>`,
+			`<a href="{{with .C}}mailto:{{end}}{{ .URLSuffix }}">foo</a>`,
 			`actions must not occur after an ambiguous URL prefix`,
 		},
 		{
-			`<q cite="{{with .C}}mailto:{{else}}javascript:{{end}}{{ .URLSuffix }}">foo</q>`,
+			`<a href="{{with .C}}mailto:{{else}}javascript:{{end}}{{ .URLSuffix }}">foo</a>`,
 			`actions must not occur after an ambiguous URL prefix`,
 		},
 		// Conditonal URL prefix in attribute value contexts that expect TrustedResourceURLs.
@@ -1469,44 +1454,44 @@ func TestExecuteErrors(t *testing.T) {
 		},
 		{
 			desc: `conditional URL prefix error in URL attribute value sanitization context 1`,
-			tmpl: `<q cite="{{if 0}}mailto:{{end}}{{ "suffix" }}">foo</q>`,
+			tmpl: `<a href="{{if 0}}mailto:{{end}}{{ "suffix" }}">foo</a>`,
 			want: `actions must not occur after an ambiguous URL prefix`,
 		},
 		{
 			desc: `conditional URL prefix error in URL attribute value sanitization context 2`,
-			tmpl: `<q cite="{{if 0}}mailto:{{else}}javascript:{{end}}{{ "suffix" }}">foo</q>`,
+			tmpl: `<a href="{{if 0}}mailto:{{else}}javascript:{{end}}{{ "suffix" }}">foo</a>`,
 			want: `actions must not occur after an ambiguous URL prefix`,
 		},
 		{
 			desc: `conditional URL prefix error in URL attribute value sanitization context 3`,
-			tmpl: `<q cite="{{if 0}}mailto{{else}}javascript{{end}}:{{ "suffix" }}">foo</q>`,
+			tmpl: `<a href="{{if 0}}mailto{{else}}javascript{{end}}:{{ "suffix" }}">foo</a>`,
 			want: `actions must not occur after an ambiguous URL prefix`,
 		},
 		{
 			desc: `conditional URL prefix error in URL attribute value sanitization context 4`,
-			tmpl: `<q cite="{{if 0}}mailto:{{else if 1}}javascript:{{else}}tel:{{end}}{{ "suffix" }}">foo</q>`,
+			tmpl: `<a href="{{if 0}}mailto:{{else if 1}}javascript:{{else}}tel:{{end}}{{ "suffix" }}">foo</a>`,
 			want: `actions must not occur after an ambiguous URL prefix`,
 		},
 		{
 			desc: `conditional URL prefix error in URL attribute value sanitization context 5`,
-			tmpl: `<q cite="{{range .B}}mailto:{{end}}{{ "suffix" }}">foo</q>`,
+			tmpl: `<a href="{{range .B}}mailto:{{end}}{{ "suffix" }}">foo</a>`,
 			data: []string{"foo", "bar"},
 			want: `actions must not occur after an ambiguous URL prefix`,
 		},
 		{
 			desc: `conditional URL prefix error in URL attribute value sanitization context 6`,
-			tmpl: `<q cite="{{range .B}}mailto:{{else}}javascript:{{end}}{{ "suffix" }}">foo</q>`,
+			tmpl: `<a href="{{range .B}}mailto:{{else}}javascript:{{end}}{{ "suffix" }}">foo</a>`,
 			data: []string{"foo", "bar"},
 			want: `actions must not occur after an ambiguous URL prefix`,
 		},
 		{
 			desc: `conditional URL prefix error in URL attribute value sanitization context 7`,
-			tmpl: `<q cite="{{with 0}}mailto:{{end}}{{ "suffix" }}">foo</q>`,
+			tmpl: `<a href="{{with 0}}mailto:{{end}}{{ "suffix" }}">foo</a>`,
 			want: `actions must not occur after an ambiguous URL prefix`,
 		},
 		{
 			desc: `conditional URL prefix error in URL attribute value sanitization context 8`,
-			tmpl: `<q cite="{{with 0}}mailto:{{else}}javascript:{{end}}{{ "suffix" }}">foo</q>`,
+			tmpl: `<a href="{{with 0}}mailto:{{else}}javascript:{{end}}{{ "suffix" }}">foo</a>`,
 			want: `actions must not occur after an ambiguous URL prefix`,
 		},
 		{

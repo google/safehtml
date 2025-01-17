@@ -37,7 +37,7 @@ func TestClone(t *testing.T) {
 	if err := t1.ExecuteTemplate(b, "a", data); err != nil {
 		t.Fatal(err)
 	}
-	if got, want := b.String(), ` <q cite="/foo?%3ci%3e%2a%2f"></q> `; got != want {
+	if got, want := b.String(), ` <q cite="/foo?&lt;i&gt;*/"></q> `; got != want {
 		t.Errorf("t1: got %q want %q", got, want)
 	}
 
