@@ -266,6 +266,7 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"contenteditable":       sanitizationContextNone,
 	"controls":              sanitizationContextNone,
 	"controlslist":          sanitizationContextNone,
+	"crossorigin":           sanitizationContextNone,
 	"datetime":              sanitizationContextNone,
 	"dir":                   sanitizationContextDirEnum,
 	"disabled":              sanitizationContextNone,
