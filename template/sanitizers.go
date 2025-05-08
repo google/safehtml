@@ -304,6 +304,7 @@ var globalAttrValSanitizationContext = map[string]sanitizationContext{
 	"nonce":                 sanitizationContextNone,
 	"open":                  sanitizationContextNone,
 	"placeholder":           sanitizationContextNone,
+	"playsinline":           sanitizationContextNone,
 	"poster":                sanitizationContextNone,
 	"preload":               sanitizationContextNone,
 	"rel":                   sanitizationContextNone,
