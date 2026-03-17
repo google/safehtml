@@ -134,6 +134,7 @@ type StyleProperties struct {
 	BackgroundPosition string
 	BackgroundRepeat   string
 	BackgroundSize     string
+	BorderColor        string
 	Color              string
 	Height             string
 	Width              string
@@ -212,6 +213,9 @@ func StyleFromProperties(properties StyleProperties) Style {
 	}
 	if properties.BackgroundSize != "" {
 		fmt.Fprintf(&buf, "background-size:%s;", filter(properties.BackgroundSize, safeRegularPropertyValuePattern))
+	}
+	if properties.BorderColor != "" {
+		fmt.Fprintf(&buf, "border-color:%s;", filter(properties.BorderColor, safeRegularPropertyValuePattern))
 	}
 	if properties.Color != "" {
 		fmt.Fprintf(&buf, "color:%s;", filter(properties.Color, safeRegularPropertyValuePattern))

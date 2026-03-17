@@ -150,6 +150,13 @@ func TestStyleFromProperties(t *testing.T) {
 			want: "background-size:10px;",
 		},
 		{
+			desc: "BorderColor",
+			input: StyleProperties{
+				BorderColor: "red",
+			},
+			want: "border-color:red;",
+		},
+		{
 			desc: "Color",
 			input: StyleProperties{
 				Color: "#000",
@@ -399,6 +406,7 @@ func TestStyleFromPropertiesAllFieldsValidated(t *testing.T) {
 		`background-position:zGoSafezInvalidPropertyValue;` +
 		`background-repeat:zGoSafezInvalidPropertyValue;` +
 		`background-size:zGoSafezInvalidPropertyValue;` +
+		`border-color:zGoSafezInvalidPropertyValue;` +
 		`color:zGoSafezInvalidPropertyValue;` +
 		`height:zGoSafezInvalidPropertyValue;` +
 		`width:zGoSafezInvalidPropertyValue;` +
