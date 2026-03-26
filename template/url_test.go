@@ -14,18 +14,20 @@ func TestValidateURLPrefix(t *testing.T) {
 		in    string
 		valid bool
 	}{
-		// Allowed schemes or MIME types.
+		// Allowed schemes.
 		{`http:`, true},
 		{`http://www.foo.com/`, true},
 		{`https://www.foo.com/`, true},
 		{`mailto://foo@foo.com.com/`, true},
 		{`ftp://foo.com/`, true},
-		{`data:image/png;base64,abc`, true},
-		{`data:video/mpeg;base64,abc`, true},
-		{`data:audio/ogg;base64,abc`, true},
-		{`data:image/png,abc`, true},
-		{`data:text/html;base64,abc`, true},
 		{`tel:+1-234-567-8901`, true},
+		// data: is not on the allowlist; all data: URLs are rejected regardless
+		// of MIME type to prevent script execution via data:text/html and similar.
+		{`data:image/png;base64,abc`, false},
+		{`data:video/mpeg;base64,abc`, false},
+		{`data:audio/ogg;base64,abc`, false},
+		{`data:image/png,abc`, false},
+		{`data:text/html;base64,abc`, false},
 		// Leading and trailing newlines.
 		{"\nhttp:", false},
 		{"http:\n", false},
