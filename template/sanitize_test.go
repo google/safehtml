@@ -446,8 +446,9 @@ func TestSanitize(t *testing.T) {
 			err:    ``,
 		},
 		{
+			// data: is not an allowed scheme; the URL is replaced with InnocuousURL.
 			input:  `<link rel="alternate" href="{{ "data:,\"><script>alert('pwned!')</script>" }}">`,
-			output: `<link rel="alternate" href="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3e">`,
+			output: `<link rel="alternate" href="about:invalid#zGoSafez">`,
 			err:    ``,
 		},
 		{
@@ -630,19 +631,21 @@ func TestSanitize(t *testing.T) {
 		},
 		// Attribute value contexts that accept both URL and TrustedResouceURL.
 		{
-			// URL sanitization applied to untrusted string.
+			// data: is not an allowed scheme; replaced with InnocuousURL.
 			input:  `<source src="{{ "data:,\"><script>alert('pwned!')</script>" }}">`,
-			output: `<source src="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3e">`,
+			output: `<source src="about:invalid#zGoSafez">`,
 			err:    ``,
 		},
 		{
+			// Pre-validated safehtml.URL and TrustedResourceURL bypass isSafeURL and pass through.
 			input:  `<source src="{{ makeURLForTest "data:,\"><script>alert('pwned!')</script>" }}"> <source src="{{ makeTrustedResourceURLForTest "data:,foo" }}">`,
 			output: `<source src="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3e"> <source src="data:,foo">`,
 			err:    ``,
 		},
 		{
+			// data: prefix replaced with InnocuousURL; literal suffix is appended.
 			input:  `<source src="{{ "data:,\"><script>alert('pwned!')</script>" }}my/path">`,
-			output: `<source src="data:,%22%3e%3cscript%3ealert%28%27pwned!%27%29%3c/script%3emy/path">`,
+			output: `<source src="about:invalid#zGoSafezmy/path">`,
 			err:    ``,
 		},
 		{
@@ -835,8 +838,9 @@ func TestSanitize(t *testing.T) {
 			err:    `expected a safehtml.Identifier value`,
 		},
 		{
+			// Schemes not on the allowlist are sanitized to InnocuousURL.
 			input:  `<a {{if 0}}id="{{ "foo:bar" }}"{{else}}href="{{ "unkwnown-scheme:bar" }}"{{end}}>foo</a>`,
-			output: `<a href="unkwnown-scheme:bar">foo</a>`,
+			output: `<a href="about:invalid#zGoSafez">foo</a>`,
 			err:    ``,
 		},
 		// Conditional valueless attribute name.

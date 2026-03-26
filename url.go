@@ -103,24 +103,35 @@ var safeURLPattern = regexp.MustCompile(`^(?:([a-z0-9+.-]+):|[^&:\/?#]*(?:[\/?#]
 // isSafeURL matches url to a subset of URLs that will not cause script execution if used in
 // a URL context within a HTML document. Specifically, this method returns true if url:
 //
-//	(a) Starts with an explicit scheme that is not javascript; or
-//	(b) Contains no scheme. To ensure that the URL cannot be interpreted as a
-//	    disallowed scheme URL, the runes ':', and '&' may only appear
-//	    after one of the runes [/?#].
+//	(a) Starts with an explicit scheme from the allowlist of known-safe schemes; or
+//	(b) Contains no scheme (relative URL).
+//
+// An allowlist is used rather than a denylist so that schemes not yet on the
+// denylist — such as vbscript:, data:, or blob: — do not silently bypass the check.
 func isSafeURL(url string) bool {
 	// Ignore case.
 	url = strings.ToLower(url)
 	submatches := safeURLPattern.FindStringSubmatch(url)
 	if submatches == nil {
-		// No match
+		// No match.
 		return false
 	}
-	if len(submatches) == 0 {
-		// Implicit URL scheme. This is safe
+	// safeURLPattern has exactly one capture group, so FindStringSubmatch
+	// returns nil or a slice of length 2. The len == 0 branch is unreachable;
+	// relative URLs (second regex alternative) produce submatches[1] == "".
+	scheme := submatches[1]
+	if scheme == "" {
+		// No explicit scheme — relative URL. Safe.
 		return true
 	}
-	// Block javascript: URLs
-	return len(submatches) == 2 && submatches[1] != "javascript"
+	// Allowlist of URI schemes safe for use in href/src attributes.
+	// Schemes absent from this list — including javascript:, vbscript:,
+	// data:, and blob: — are rejected and replaced with InnocuousURL.
+	switch scheme {
+	case "http", "https", "mailto", "ftp", "tel":
+		return true
+	}
+	return false
 }
 
 // String returns the string form of the URL.
