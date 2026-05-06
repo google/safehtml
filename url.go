@@ -49,13 +49,12 @@ const InnocuousURL = "about:invalid#zGoSafez"
 // a pattern of commonly used safe URLs. If url fails validation, this method returns a
 // URL containing InnocuousURL.
 //
-// url may be a URL with an explicit scheme that is not javascript, or a relative URL,
+// url may be a URL with the http, https, ftp or mailto scheme, or a relative URL,
 // i.e. a URL without a scheme. Specifically, a relative URL may be scheme-relative,
 // absolute-path-relative, or path-relative. See
 // http://url.spec.whatwg.org/#concept-relative-url.
 //
-// If the URL has an explicit scheme, it should only contain characters allowed by the URL
-// specification, i.e. alphanumeric or [+-.].
+// url may also be a base64 data URL with an allowed audio, image or video MIME type.
 //
 // No attempt is made at validating that the URL percent-decodes to structurally valid or
 // interchange-valid UTF-8 since the percent-decoded representation is unsafe to use in an
@@ -68,14 +67,13 @@ func URLSanitized(url string) URL {
 }
 
 // safeURLPattern matches URLs that
+//   - Start with a scheme in the allowlist (http, https, mailto, ftp); or
+//   - Contain no scheme. To ensure that the URL cannot be interpreted as a
+//     disallowed scheme URL, ':' may only appear after one of the runes [/?#].
 //
-//		(a) Start with (capture) an explicit scheme. The scheme needs to be further validated to ban
-//	     javascript; or
-//		(b) Contain no scheme. To ensure that the URL cannot be interpreted as a
-//		    disallowed scheme URL, ':' may only appear after one of the runes [/?#].
-//
-// Warning: Matching this regex is not enough to validate the SafeUrl contract. See the isSafeUrl
-// implementation for more information.
+// Using an allowlist rather than a single-scheme blocklist (e.g. "not javascript")
+// is critical: schemes like data:, vbscript:, blob:, and others can cause script
+// execution and must be blocked by default rather than individually enumerated.
 //
 // The origin (RFC 6454) in which a URL is loaded depends on
 // its scheme.  We assume that the scheme used by the current document is HTTPS, HTTP, or
@@ -98,29 +96,38 @@ func URLSanitized(url string) URL {
 //   - Otherwise, a colon after a single solidus ("/") must be in the path.
 //   - Otherwise, a colon after a double solidus ("//") must be in the authority (before port).
 //   - Otherwise, a colon after a valid protocol must be in the opaque part of the URL.
-var safeURLPattern = regexp.MustCompile(`^(?:([a-z0-9+.-]+):|[^&:\/?#]*(?:[\/?#]|$))`)
+var safeURLPattern = regexp.MustCompile(`^(?:(?:https?|mailto|ftp|tel):|[^:/?#]*(?:[/?#]|$))`)
+
+// dataURLPattern matches base-64 data URLs (RFC 2397), with the first capture group being the media type
+// specification given as a MIME type.
+//
+// Note: this pattern does not match data URLs containing media type specifications with optional parameters,
+// such as `data:text/javascript;charset=UTF-8;base64,...`. This is intentional: only safe audio, image
+// and video MIME types are allowed (see safeMIMETypePattern), and those types do not require parameters.
+var dataURLPattern = regexp.MustCompile(`^data:([^;,]*);base64,[a-z0-9+/]+=*$`)
+
+// safeMIMETypePattern matches MIME types that are safe to include in a data URL.
+var safeMIMETypePattern = regexp.MustCompile(`^(?:audio/(?:3gpp2|3gpp|aac|midi|mp3|mp4|mpeg|oga|ogg|opus|x-m4a|x-matroska|x-wav|wav|webm)|image/(?:bmp|gif|jpeg|jpg|png|tiff|webp|x-icon)|video/(?:mpeg|mp4|ogg|webm|x-matroska))$`)
 
 // isSafeURL matches url to a subset of URLs that will not cause script execution if used in
 // a URL context within a HTML document. Specifically, this method returns true if url:
+//   (a) Starts with a scheme in the allowlist (http, https, mailto, ftp); or
+//   (b) Contains no scheme. To ensure that the URL cannot be interpreted as a
+//       disallowed scheme URL, the runes ':', and '&' may only appear
+//       after one of the runes [/?#]; or
+//   (c) Is a base64 data URL with an audio, image, or video MIME type.
 //
-//	(a) Starts with an explicit scheme that is not javascript; or
-//	(b) Contains no scheme. To ensure that the URL cannot be interpreted as a
-//	    disallowed scheme URL, the runes ':', and '&' may only appear
-//	    after one of the runes [/?#].
+// All other URLs, including those with data:, vbscript:, blob:, or javascript:
+// schemes, are rejected.  Using an allowlist ensures that future dangerous schemes
+// are blocked without requiring individual enumeration.
 func isSafeURL(url string) bool {
 	// Ignore case.
 	url = strings.ToLower(url)
-	submatches := safeURLPattern.FindStringSubmatch(url)
-	if submatches == nil {
-		// No match
-		return false
-	}
-	if len(submatches) == 0 {
-		// Implicit URL scheme. This is safe
+	if safeURLPattern.MatchString(url) {
 		return true
 	}
-	// Block javascript: URLs
-	return len(submatches) == 2 && submatches[1] != "javascript"
+	submatches := dataURLPattern.FindStringSubmatch(url)
+	return len(submatches) == 2 && safeMIMETypePattern.MatchString(submatches[1])
 }
 
 // String returns the string form of the URL.
