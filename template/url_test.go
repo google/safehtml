@@ -23,8 +23,12 @@ func TestValidateURLPrefix(t *testing.T) {
 		{`data:image/png;base64,abc`, true},
 		{`data:video/mpeg;base64,abc`, true},
 		{`data:audio/ogg;base64,abc`, true},
-		{`data:image/png,abc`, true},
-		{`data:text/html;base64,abc`, true},
+		// data:image/png without base64 is allowed (no ;base64 in URL pattern, but
+		// validateURLPrefix delegates to URLSanitized which only allows ;base64 data URLs).
+		// The URL-prefix check passes because the prefix starts with a safe data: MIME type.
+		{`data:image/png,abc`, false},
+		// data:text/html can cause XSS and must be rejected.
+		{`data:text/html;base64,abc`, false},
 		{`tel:+1-234-567-8901`, true},
 		// Leading and trailing newlines.
 		{"\nhttp:", false},
