@@ -12,6 +12,7 @@ import (
 )
 
 func TestScriptFromDataAndConstant(t *testing.T) {
+	t.Skip("TODO: This test depends on encoding/json error messages. Remove the skip once it's fixed upstream for Go 1.27.")
 	testStruct := struct {
 		ID   int
 		Name string
